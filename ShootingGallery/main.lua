@@ -11,6 +11,7 @@ function love.load()
     timer = 0 --in seconds
     gameState = 1 -- 1 = main menu, 2 = in session
     textFontSize = 40
+    scorePenalty = 1 -- pts loss per miss
 
 
     --sprites
@@ -76,16 +77,20 @@ end
 function love.mousepressed(x,y,button,istouch,presses)
     if button == 1 and gameState == 2 then
         local mouseToTarget = distanceToTarget(x,y,target.x,target.y)
-        if mouseToTarget < target.radius then
+        if mouseToTarget < target.radius then -- count hit
             score = score + 1
             target.x = math.random(target.radius,love.graphics.getWidth()-target.radius)
             target.y = math.random(target.radius,love.graphics.getHeight()-target.radius)
+        elseif mouseToTarget > target.radius and gameState == 2 then --count miss
+            score = score - scorePenalty
+            if score <= 0 then
+                score = 0
+                gameState = 1 -- end game
+            end
         end
-    -- Pause the game at first. Press shoot to start the game
-    else if button == 1 and gameState == 1 then
+    elseif button == 1 and gameState == 1 then  -- Pause the game at first. Press shoot to start the game
         gameState = 2
         timer = 10
-        end
     end
 end
 
