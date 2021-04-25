@@ -10,17 +10,12 @@ function love.load()
     timer = 0
 
     --set the game font
-    gameFont = love.graphics.newFont(40)
-
-
 
 end
 
 
 function love.update(dt)
-    -- update score uppon target click
-
-
+    -- update score upon target click
 end
 
 function love.draw()
@@ -30,7 +25,6 @@ function love.draw()
 
     -- draw the score and timer
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.setFont(gameFont)
     love.graphics.print(score, 0,0)
 
 end
@@ -38,6 +32,14 @@ end
 -- we have to add our own code to the mousepressed function (makes sense)
 function love.mousepressed(x,y,button,istouch,presses)
     if button == 1 then
-        score = score + 1
+        local mouseToTarget = distanceToTarget(x,y,target.x,target.y)
+        if mouseToTarget < target.radius then
+            score = score + 1
+        end
     end
+end
+
+
+function distanceToTarget(x1,y1,x2,y2)
+    return math.sqrt((x2-x1)^2+(y2-y1)^2)
 end
