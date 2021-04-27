@@ -75,13 +75,15 @@ function love.draw()
 end
 
 function love.mousepressed(x,y,button,istouch,presses)
+    --get out of the menu
+
+    local mouseToTarget = distanceToTarget(x,y,target.x,target.y)
     if button == 1 and gameState == 2 then
-        local mouseToTarget = distanceToTarget(x,y,target.x,target.y)
-        if mouseToTarget < target.radius then -- count hit
+        if mouseToTarget < target.radius then -- target hit
             score = score + 1
             target.x = math.random(target.radius,love.graphics.getWidth()-target.radius)
             target.y = math.random(target.radius,love.graphics.getHeight()-target.radius)
-        elseif mouseToTarget > target.radius and gameState == 2 then --count miss
+        elseif mouseToTarget <= target.radius and gameState == 2 then --target miss
             score = score - scorePenalty
             if score <= 0 then
                 score = 0
@@ -91,6 +93,16 @@ function love.mousepressed(x,y,button,istouch,presses)
     elseif button == 1 and gameState == 1 then  -- Pause the game at first. Press shoot to start the game
         gameState = 2
         timer = 10
+        
+    elseif button == 2 and gameState == 2 then -- right click bonus shot
+        if mouseToTarget <= target.radius then
+            score = score + 2
+            target.x = math.random(target.radius,love.graphics.getWidth()-target.radius)
+            target.y = math.random(target.radius,love.graphics.getHeight()-target.radius)
+
+        else
+            timer = timer - 1 --when miss loose a second
+        end
     end
 end
 
